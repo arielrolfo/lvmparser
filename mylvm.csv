@@ -1,0 +1,4 @@
+vgname;lvname;fstype;fssize;fssizeunit;mountpoint;options
+vg1;lv1;xfs;20;GM;/datos;defaults,option2
+vg2;lv2;xfxs;202;G;/datos2;optionspropias,segundaopcionpropia
+vg3;lv3;xfs;;;;/datos2
