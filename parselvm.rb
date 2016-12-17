@@ -3,37 +3,63 @@ require 'csv'
 ## file has to be /tmp/mylvm.csv and has to contain 1st line as col headers
 result = []
 File.open('/tmp/mylvm.csv','r') do |handle|
-  handle.each do |line|
+	handle.each do |line|
 
-    _vgname = line.split(';')[0]
-    _lvname = line.split(';')[1]
-    _fstype = line.split(';')[2]
-    _fssize = line.split(';')[3]
-    _fssizeunit = line.split(';')[4]
-    _mountpoint = line.split(';')[5]
-    _options = line.split(';')[6]
-    next if _vgname == "vgname"
+		## check how many elements the line has, it MUST be 7
+		_myarrayline = line.split(';').reject(&:empty?)
+		puts _myarrayline.to_s
+		puts _myarrayline.count
 
-    if _fssizeunit != "M" and _fssizeunit != "G"
-    	puts "ERROR UNITS #{_fssizeunit}"
-    end
+		if _myarrayline.count == 7
+		    _vgname = line.split(';')[0].strip
+		    _lvname = line.split(';')[1].strip
+		    _fstype = line.split(';')[2].strip
+		    _fssize = line.split(';')[3].strip
+		    _fssizeunit = line.split(';')[4].strip
+		    _mountpoint = line.split(';')[5].strip
+		    _options = line.split(';')[6].strip
 
-    puts "INFO: creating VG:"
-    puts "vgcreate #{_vgname}"
-    puts "INFO creating LV:"
-    puts "lvcreate -L #{_fssize}#{_fssizeunit}  -n #{_lvname} #{_vgname}"
-    #puts "vgname:" + _vgname + " - lvname: " + _lvname + " - fssize: " + _fssize
+		    next if _vgname == "vgname" || _vgname == ""
+		    next if _lvname == ""
+		    next if _fstype == ""
+		    next if _fssize == ""
+		    next if _fssizeunit == ""
+		    next if _mountpoint == ""
+		    next if _options == ""
 
-    puts "INFO: creating filesystem"
-    puts "mkfs.#{_fstype} -f /dev/#{_vgname}/#{_lvname}" 
 
-    puts "INFO: creating mount point"
-    puts "test -d #{_mountpoint} || mkdir -p #{_mountpoint}"
 
-    puts "INFO: mounting FS"
-    puts "mount #{_mountpoint}"
-    puts
-  end
+		    if _fssizeunit != "M" and _fssizeunit != "G"
+		    	puts "ERROR UNITS #{_fssizeunit}"
+		    	next
+		    end
+
+		    if _fstype != "xfs" and _fssizeunit != "ext3" and _fssizeunit != "ext4"
+		    	puts "ERROR FSTYPE #{_fssizeunit}"
+		    	next
+		    end
+
+		    puts "INFO: creating VG:"
+		    puts "vgcreate #{_vgname}"
+		    puts "INFO creating LV:"
+		    puts "lvcreate -L #{_fssize}#{_fssizeunit}  -n #{_lvname} #{_vgname}"
+		    #puts "vgname:" + _vgname + " - lvname: " + _lvname + " - fssize: " + _fssize
+
+		    puts "INFO: creating filesystem"
+		    puts "mkfs.#{_fstype} -f /dev/#{_vgname}/#{_lvname}" 
+
+		    puts "INFO: creating mount point"
+		    puts "test -d #{_mountpoint} || mkdir -p #{_mountpoint}"
+
+		    puts "INFO: mounting FS"
+		    puts "mount #{_mountpoint}"
+		    puts
+		else
+			puts "not enough fields"
+		end
+	end
+	puts
+	puts
 end
 
 
