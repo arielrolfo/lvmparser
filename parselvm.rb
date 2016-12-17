@@ -2,7 +2,7 @@
 require 'csv'
 ## file has to be /tmp/mylvm.csv and has to contain 1st line as col headers
 result = []
-File.open('/tmp/mylvm.csv','r') do |handle|
+File.open('mylvm.csv','r') do |handle|
 	handle.each do |line|
 
 		## check how many elements the line has, it MUST be 7
