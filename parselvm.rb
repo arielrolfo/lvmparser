@@ -1,7 +1,13 @@
 
-require 'csv'
+#require 'csv'
 ## file has to be /tmp/mylvm.csv and has to contain 1st line as col headers
 result = []
+
+
+_dia = `test -d /pepe && echo ok || echo nok`
+
+puts "Today is: #{_dia}"
+
 File.open('mylvm.csv','r') do |handle|
 	handle.each do |line|
 
@@ -39,8 +45,9 @@ File.open('mylvm.csv','r') do |handle|
 		    	next
 		    end
 
-		    puts "INFO: creating VG:"
-		    puts "vgcreate #{_vgname}"
+		    #puts "INFO: creating VG:"
+		    #puts "vgcreate #{_vgname}"
+		    vgscheck = `vgs 2> /dev/null | grep #{_vgname} | wc -l`
 		    puts "INFO creating LV:"
 		    puts "lvcreate -L #{_fssize}#{_fssizeunit}  -n #{_lvname} #{_vgname}"
 		    #puts "vgname:" + _vgname + " - lvname: " + _lvname + " - fssize: " + _fssize
@@ -52,7 +59,7 @@ File.open('mylvm.csv','r') do |handle|
 		    puts "test -d #{_mountpoint} || mkdir -p #{_mountpoint}"
 
 		    puts "INFO: mounting FS"
-		    puts "mount #{_mountpoint}"
+		    puts "mount /dev/#{_vgname}/#{_lvname} #{_mountpoint}"
 		    puts
 		else
 			puts "not enough fields"
