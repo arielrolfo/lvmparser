@@ -47,6 +47,9 @@ File.open('mylvm.csv','r') do |handle|
 
 		    #puts "INFO: creating VG:"
 		    #puts "vgcreate #{_vgname}"
+
+		    ## todo: hacer que se ingrese la lun /dev/mapper/xxxx en el csv de manera tal de detectar la cantidad de extents
+		    ## y utilizar -l [extents] en lugar de -L para el size
 		    vgscheck = `vgs 2> /dev/null | grep #{_vgname} | wc -l`
 		    puts "INFO creating LV:"
 		    puts "lvcreate -L #{_fssize}#{_fssizeunit}  -n #{_lvname} #{_vgname}"
