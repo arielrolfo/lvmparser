@@ -68,6 +68,7 @@ File.open(_lvmfile,'r') do |handle|
                     else
                       ## assuming the user input the device as a whole to create the LV in there
                       ## Determine the size of the whole pv in extents units
+                        puts "pvcreate #{_pvs}"
                         _fssize = `pvdisplay #{_pvs} | grep \"Free PE \"|awk \'{print $3}\'`
                         puts "PV SIZE: #{_fssize.strip}"
                         puts "lvcreate -l #{_fssize.strip} -n #{_lvname} #{_vgname} #{_pvs}"
@@ -85,6 +86,13 @@ File.open(_lvmfile,'r') do |handle|
                     puts "INFO: mounting FS"
                     puts "mount /dev/#{_vgname}/#{_lvname} #{_mountpoint}"
                     puts
+
+                    ## creating FS entries in FSTAB
+
+                    puts "INFO: FSTAB entries"
+                    puts "/dev/#{_vgname}/#{_lvname} #{_mountpoint} #{_fstype} defaults,#{_options} 0 2"
+
+
                 else
                         puts "not enough fields"
                 end
