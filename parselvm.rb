@@ -90,7 +90,7 @@ File.open(_lvmfile,'r') do |handle|
                     ## creating FS entries in FSTAB
 
                     puts "INFO: FSTAB entries"
-                    puts "/dev/#{_vgname}/#{_lvname} #{_mountpoint} #{_fstype} defaults,#{_options} 0 2"
+                    puts "/dev/mapper/#{_vgname}-#{_lvname} #{_mountpoint} #{_fstype} defaults,#{_options} 0 2"
 
 
                 else
